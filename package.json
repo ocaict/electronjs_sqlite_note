@@ -1,0 +1,21 @@
+{
+  "name": "note_app",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "dev": "electron .",
+    "rebuild": "electron-rebuild -f -w sqlite3",
+    "build": "electron-packager . noteapp --asar --icon=note.ico --overwrite"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "electron": "^30.0.6"
+  },
+  "dependencies": {
+    "electron-packager": "^17.1.2",
+    "electron-rebuild": "^3.2.9",
+    "sqlite3": "^5.1.7"
+  }
+}

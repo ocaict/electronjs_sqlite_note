@@ -1,0 +1,5 @@
+node_modules/
+noteapp-win32-x64/
+resources/
+no*.md
+databases/
