@@ -7,4 +7,7 @@ contextBridge.exposeInMainWorld("api", {
   getNotes: () => ipcRenderer.invoke("allnotes"),
   getNote: (args) => ipcRenderer.invoke("onenote", args),
   deleteNote: (args) => ipcRenderer.invoke("delete-note", args),
+  showMessage: (msg) => ipcRenderer.invoke("show-message", msg),
+  showPopMenu: (args) => ipcRenderer.invoke("show-popup-menu", args),
+  showNotification: (args) => ipcRenderer.invoke("show-notification", args),
 });

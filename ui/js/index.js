@@ -3,6 +3,8 @@ const titleInput = document.querySelector("#title");
 const bodyInput = document.querySelector("#body");
 const noteListContainer = document.querySelector(".note-list");
 const deleteBtn = document.querySelector(".delete-btn");
+const addBtn = document.querySelector(".add-btn");
+
 const formInputs = [bodyInput, titleInput];
 let isUpdate = false;
 let updateId = null;
@@ -21,7 +23,11 @@ saveBtn.addEventListener("click", async (e) => {
   e.preventDefault();
   const note = { title: titleInput.value, body: bodyInput.value };
   if (!note.title.trim() || !note.body.trim())
-    return console.log("Note Title or Body cannoct be blank");
+    return await api.showMessage({
+      message: "Note Title or Body cannoct be blank",
+      type: "error",
+      title: "Error",
+    });
 
   if (!isUpdate) {
     const result = await api.saveNote(note);
@@ -29,6 +35,10 @@ saveBtn.addEventListener("click", async (e) => {
     clearInput(formInputs);
     displayNotes(notes);
     saveBtn.textContent = "Save";
+    await api.showNotification({
+      title: "Info",
+      body: "Noted Saved in Database",
+    });
   } else {
     if (updateId) {
       note.id = updateId;
@@ -39,44 +49,13 @@ saveBtn.addEventListener("click", async (e) => {
       updateId = null;
       isUpdate = false;
       saveBtn.textContent = "Save";
+      await api.showNotification({
+        title: "Info",
+        body: "Noted updated in Database",
+      });
     }
   }
 });
-
-// const textEditor = document.querySelector(".text-editor");
-// const openBtn = document.querySelector(".open-btn");
-// const saveAsBtn = document.querySelector(".save-as-btn");
-// const systemInfoBtn = document.querySelector(".system-info-btn");
-// const systemInfoInput = document.querySelector("#system-info");
-
-// let textContent = "";
-
-// openBtn.addEventListener("click", async (e) => {
-//   const result = await api.openFile();
-//   if (result) {
-//     textEditor.innerHTML = result;
-//   }
-// });
-
-// saveBtn.addEventListener("click", async (e) => {
-//   textContent = textEditor.textContent;
-
-//   const result = await api.saveFile(textContent);
-//   console.log(result);
-// });
-
-// saveAsBtn.addEventListener("click", async (e) => {
-//   textContent = textEditor.textContent;
-//   const result = await api.saveAsFile(textContent);
-//   console.log(result);
-// });
-
-// systemInfoBtn.addEventListener("click", async (e) => {
-//   const info = systemInfoInput.value;
-
-//   const result = await api.getSysteminfo(info);
-//   console.log(result);
-// });
 
 const displayNotes = (notes) => {
   if (!notes.length) {
@@ -126,9 +105,21 @@ noteListContainer.addEventListener("click", async (e) => {
     saveBtn.textContent = "Update";
   }
 });
+noteListContainer.addEventListener("contextmenu", async (e) => {
+  let id = null;
+  if (!e.target.parentElement.className.includes("note-id")) return;
+  let selectednoteElem = e.target.parentElement;
+  id = selectednoteElem.id;
+  await api.showPopMenu(id);
+});
 
 deleteBtn.addEventListener("click", async (e) => {
-  if (!deleteId) return console.log("Selected Note to be deleted");
+  if (!deleteId)
+    return await api.showMessage({
+      message: "Select Note to be deleted!",
+      type: "error",
+      title: "Error",
+    });
 
   const result = await api.deleteNote(deleteId);
   const notes = await api.getNotes();
@@ -136,6 +127,11 @@ deleteBtn.addEventListener("click", async (e) => {
   deleteId = null;
 });
 
-let sentence =
-  "This is a long sentence and is what we are going to learn to night because it is a long sentenses";
-console.log(sentence.substring(0, 30) + "...");
+addBtn.addEventListener("click", (e) => {
+  clearInput(formInputs);
+  titleInput.focus();
+  saveBtn.textContent = "Save";
+  updateId = null;
+  isUpdate = false;
+  deleteId = null;
+});
