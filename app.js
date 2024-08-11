@@ -62,19 +62,17 @@ app.whenReady().then(() => {
     arch: os.arch(),
     cpus: os.cpus(),
     freemem: os.freemem(),
-    homedir: os.homedir(),
-    hostname: os.hostname(),
-    networkInterfaces: os.networkInterfaces(),
     platform: os.platform(),
     release: os.release(),
     totalmem: os.totalmem(),
     type: os.type(),
-    userInfo: os.userInfo(),
+    username: os.userInfo().username,
     uptime: os.uptime(),
     version: os.version(),
     machine: os.machine(),
   };
   ipcMain.handle("os", (e, key) => {
+    if (key) return info[key];
     return info;
   });
   ipcMain.handle("show-notification", (e, { title, body, subtitle }) => {

@@ -4,6 +4,7 @@ const bodyInput = document.querySelector("#body");
 const noteListContainer = document.querySelector(".note-list");
 const deleteBtn = document.querySelector(".delete-btn");
 const addBtn = document.querySelector(".add-btn");
+const footerStatus = document.querySelector(".footer-status");
 
 const formInputs = [bodyInput, titleInput];
 let isUpdate = false;
@@ -35,10 +36,7 @@ saveBtn.addEventListener("click", async (e) => {
     clearInput(formInputs);
     displayNotes(notes);
     saveBtn.textContent = "Save";
-    await api.showNotification({
-      title: "Info",
-      body: "Noted Saved in Database",
-    });
+    // api.showNotification({ title: "Info", body: "Data Saved in Database" });
   } else {
     if (updateId) {
       note.id = updateId;
@@ -49,10 +47,7 @@ saveBtn.addEventListener("click", async (e) => {
       updateId = null;
       isUpdate = false;
       saveBtn.textContent = "Save";
-      await api.showNotification({
-        title: "Info",
-        body: "Noted updated in Database",
-      });
+      // api.showNotification({ title: "Info", body: "Data updated in Database" });
     }
   }
 });
@@ -83,8 +78,9 @@ const displayNotes = (notes) => {
 document.addEventListener("DOMContentLoaded", async () => {
   noteListContainer.innerHTML = "";
   const notes = await api.getNotes();
-
   displayNotes(notes);
+  const systemInfo = await api.getSysteminfo("username");
+  footerStatus.innerHTML = `Username: ${systemInfo}`;
 });
 
 noteListContainer.addEventListener("click", async (e) => {
@@ -105,6 +101,7 @@ noteListContainer.addEventListener("click", async (e) => {
     saveBtn.textContent = "Update";
   }
 });
+
 noteListContainer.addEventListener("contextmenu", async (e) => {
   let id = null;
   if (!e.target.parentElement.className.includes("note-id")) return;

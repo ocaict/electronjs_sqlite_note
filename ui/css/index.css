@@ -75,6 +75,28 @@ body {
   overflow: auto;
   padding: 0 5px;
 }
+.note-list::-webkit-scrollbar,
+#body::-webkit-scrollbar {
+  width: 6px;
+}
+.note-list::-webkit-scrollbar-button,
+#body::-webkit-scrollbar-button {
+  background-color: #000;
+  display: none;
+}
+.note-list::-webkit-scrollbar-thumb,
+#body::-webkit-scrollbar-thumb {
+  background-color: #000;
+  border-radius: 5px;
+}
+
+.note-list::-webkit-scrollbar-track {
+  background-color: green;
+}
+.note-list::-webkit-scrollbar-track-piece,
+#body::-webkit-scrollbar-track-piece {
+  background-color: #424242;
+}
 
 .note {
   background-color: #333;
@@ -119,7 +141,7 @@ body {
 .body .right {
   height: 100%;
   flex: 1;
-  border-left: 2px solid rgba(255, 255, 255, 0.4);
+  border-left: 2px solid #424242;
 }
 
 .form {
