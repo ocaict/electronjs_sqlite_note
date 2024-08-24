@@ -17,10 +17,11 @@ button {
   color: #fff;
   transition: all 0.3s linear;
   box-shadow: 0px 0px 1px rgba(255, 255, 255, 0.4);
+  opacity: 0.7;
 }
 
 .btn:hover {
-  background-color: #383838e3;
+  background-color: #3f3f3fe3;
   color: #fff;
 }
 
@@ -121,7 +122,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.4);
 }
 .note .note-title {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   opacity: 0.9;
 }
 

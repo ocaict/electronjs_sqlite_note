@@ -1,10 +1,10 @@
-const { dialog } = require("electron");
 const {
   app,
   BrowserWindow,
   ipcMain,
   Menu,
   Notification,
+  dialog,
 } = require("electron/main");
 const os = require("os");
 const path = require("path");

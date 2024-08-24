@@ -3,3 +3,4 @@ noteapp-win32-x64/
 resources/
 no*.md
 databases/
+.env
