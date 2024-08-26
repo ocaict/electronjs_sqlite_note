@@ -122,12 +122,15 @@ ipcMain.handle("delete-note", async (e, id) => {
   return result;
 });
 
-ipcMain.handle("show-message", async (e, { message, type, title }) => {
+ipcMain.handle("show-message", async (e, { message, type, title, buttons }) => {
   const result = await dialog.showMessageBox(mainWindow, {
     title,
     message,
     type,
+    buttons,
   });
+
+  return result.response === 0;
 });
 
 ipcMain.handle("show-popup-menu", async (e, id) => {

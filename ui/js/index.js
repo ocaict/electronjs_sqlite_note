@@ -25,9 +25,10 @@ saveBtn.addEventListener("click", async (e) => {
   const note = { title: titleInput.value, body: bodyInput.value };
   if (!note.title.trim() || !note.body.trim())
     return await api.showMessage({
-      message: "Note Title or Body cannoct be blank",
+      message: "Note title or body cannot be blank",
       type: "error",
       title: "Error",
+      buttons: [],
     });
 
   if (!isUpdate) {
@@ -116,9 +117,17 @@ deleteBtn.addEventListener("click", async (e) => {
       message: "Select Note to be deleted!",
       type: "error",
       title: "Error",
+      buttons: [],
     });
+  const result = await api.showMessage({
+    title: "Confirm",
+    type: "info",
+    message: "Are you sure you want to delete the selected note?",
+    buttons: ["Yes", "Cancel"],
+  });
 
-  const result = await api.deleteNote(deleteId);
+  if (!result) return;
+  await api.deleteNote(deleteId);
   const notes = await api.getNotes();
   displayNotes(notes);
   deleteId = null;
