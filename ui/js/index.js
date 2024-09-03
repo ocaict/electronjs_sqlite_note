@@ -55,7 +55,7 @@ saveBtn.addEventListener("click", async (e) => {
 
 const displayNotes = (notes) => {
   if (!notes.length) {
-    noteListContainer.innerHTML = `<p class="empty-message">You note will display here</p>`;
+    noteListContainer.innerHTML = `<p class="empty-message">Your note will display here</p>`;
 
     return;
   }
@@ -131,6 +131,7 @@ deleteBtn.addEventListener("click", async (e) => {
   const notes = await api.getNotes();
   displayNotes(notes);
   deleteId = null;
+  clearInput(formInputs);
 });
 
 addBtn.addEventListener("click", (e) => {
