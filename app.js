@@ -176,7 +176,7 @@ ipcMain.handle("show-popup-menu", async (e, id) => {
     {
       label: "Copy",
       click: () => {
-        console.log("Copy");
+        mainWindow.webContents.send("copy-note", id);
       },
     },
     {

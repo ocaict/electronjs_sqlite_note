@@ -146,3 +146,11 @@ const resetForm = () => {
 window.api.onNoteDelete(async (event, id) => {
   await deleteNote(id);
 });
+
+window.api.onNoteCopy(async (event, id) => {
+  const {
+    note: { title, body },
+  } = await api.getNote(id);
+  const noteString = `${title} \n ${body}`;
+  await navigator.clipboard.writeText(noteString);
+});
