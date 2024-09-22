@@ -17,6 +17,13 @@ const {
 } = require("./db_config");
 const { shell } = require("electron");
 
+const { autoUpdater } = require("electron-updater");
+const logPath = app.isPackaged ? "resources" : "logs";
+const log = require("electron-log");
+log.transports.file.resolvePathFn = () =>
+  path.join(__dirname, logPath, "logs.log");
+log.log(`AppVersion: ${app.getVersion()}`);
+
 let mainWindow;
 let aboutWindow;
 const preloadJS = "preload.js";
@@ -93,6 +100,31 @@ app.whenReady().then(() => {
       body,
     });
     notification.show();
+  });
+
+  // Autoupdate logics
+  autoUpdater.checkForUpdatesAndNotify();
+
+  autoUpdater.on("update-available", () => {
+    log.info("Update Available");
+  });
+
+  autoUpdater.on("update-not-available", () => {
+    log.info("Update Not Available");
+  });
+  autoUpdater.on("checking-for-update", () => {
+    log.info("Checking For Update..");
+  });
+  autoUpdater.on("download-progress", (progress) => {
+    log.info("Download Progress");
+    log.info(progress);
+  });
+  autoUpdater.on("update-downloaded", (progress) => {
+    log.info("Update Downloaded");
+  });
+  autoUpdater.on("error", (error) => {
+    log.info("Error");
+    log.info(error);
   });
 });
 

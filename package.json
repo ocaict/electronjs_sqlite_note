@@ -6,18 +6,43 @@
     "dev": "electron .",
     "rebuild": "electron-rebuild -f -w sqlite3",
     "build": "electron-packager . noteapp --asar --icon=appIcon.ico --overwrite",
-    "build-small": "npm prune --production && electron-packager . noteapp --platform=win32 --arch=x64  --overwrite --asar --icon=appIcon.ico --ignore='^/src' --ignore='^/test'"
+    "build-small": "npm prune --production && electron-packager . noteapp --platform=win32 --arch=x64  --overwrite --asar --icon=appIcon.ico --ignore='^/src' --ignore='^/test'",
+    "package": "electron-builder -p always"
   },
-  "author": "",
+  "build": {
+    "appId": "com.ocamedia.notaapp",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "ocaict",
+        "repo": "electronjs_sqlite_note",
+        "token": "${env.GH_TOKEN}",
+        "private": false
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "deleteAppDataOnUninstall": true
+    }
+  },
+  "author": "Oluegwu Chigozie",
   "license": "ISC",
   "description": "",
   "devDependencies": {
     "electron": "^30.0.6",
-    "electron-reload": "^2.0.0-alpha.1"
-  },
-  "dependencies": {
+    "electron-builder": "^25.0.5",
     "electron-packager": "^17.1.2",
     "electron-rebuild": "^3.2.9",
+    "electron-reload": "^2.0.0-alpha.1",
+    "electron-updater": "^6.3.4"
+  },
+  "dependencies": {
+    "electron-log": "^5.2.0",
     "sqlite3": "^5.1.7"
   }
 }

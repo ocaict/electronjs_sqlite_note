@@ -5,3 +5,6 @@ no*.md
 databases/
 .env
 *.md
+*.exe
+logs/
+dist/
