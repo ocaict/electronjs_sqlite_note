@@ -4,3 +4,4 @@ resources/
 no*.md
 databases/
 .env
+*.md

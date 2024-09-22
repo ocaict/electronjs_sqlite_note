@@ -13,40 +13,6 @@ CREATE TABLE IF NOT EXISTS notes (
 );
 `);
 
-// db.run(`
-// CREATE TABLE IF NOT EXISTS users (
-//   user_id INTEGER PRIMARY KEY,
-//   username TEXT NOT NULL UNIQUE,
-//   first_name TEXT,
-//   last_name TEXT,
-//   email TEXT,
-//   phone TEXT,
-//   password TEXT NOT NULL,
-//   address TEXT,
-//   imageurl TEXT,
-//   dob TEXT,
-//   date_registered DATETIME DEFAULT CURRENT_TIMESTAMP
-// );
-// `);
-
-// db.run(`
-// CREATE TABLE IF NOT EXISTS contacts (
-//   id INTEGER PRIMARY KEY,
-//   user_id INTEGER,
-//   firstname TEXT,
-//   lastname TEXT,
-//   email TEXT,
-//   phone TEXT,
-//   address TEXT,
-//   company TEXT,
-//   imageurl TEXT,
-//   dob TEXT,
-//   note TEXT,
-//   date DATETIME DEFAULT CURRENT_TIMESTAMP,
-//   FOREIGN KEY (user_id) REFERENCES users(user_id)
-// )
-// `);
-
 function insertNote({ title, body }) {
   return new Promise((resolve, reject) => {
     let query = `
@@ -65,66 +31,6 @@ function insertNote({ title, body }) {
         message: `Note  inserted with ID ${this.lastID}`,
       });
     });
-  });
-}
-
-// Insert Contact
-function insertContact(
-  userId,
-  firstname,
-  lastname,
-  email,
-  phone,
-  address,
-  imageurl,
-  company,
-  dob,
-  note
-) {
-  return new Promise((resolve, reject) => {
-    let query = `
-      INSERT INTO contacts (user_id, firstname, lastname, email, phone, address, company, imageurl, dob, note)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-    db.run(
-      query,
-      [
-        userId,
-        firstname,
-        lastname,
-        email,
-        phone,
-        address,
-        company,
-        imageurl,
-        dob,
-        note,
-      ],
-      function (err) {
-        if (err) {
-          return reject("Error inserting contact:" + err.message);
-        }
-        return resolve(`Contact ${firstname} inserted with ID ${this.lastID}`);
-      }
-    );
-  });
-}
-
-// Get All Contacts
-
-function getAllContacts(userId) {
-  return new Promise((resolve, reject) => {
-    db.all(
-      `SELECT * FROM contacts WHERE user_id = ?`,
-      [userId],
-      (err, rows) => {
-        if (err) {
-          reject("Error retrieving contacts:", err.message);
-          return;
-        }
-        resolve(rows);
-      }
-    );
   });
 }
 
@@ -188,7 +94,6 @@ function deleteNote(id) {
 }
 
 module.exports = {
-  db,
   insertNote,
   getAllNotes,
   getNote,

@@ -5,13 +5,15 @@
   "scripts": {
     "dev": "electron .",
     "rebuild": "electron-rebuild -f -w sqlite3",
-    "build": "electron-packager . noteapp --asar --icon=note.ico --overwrite"
+    "build": "electron-packager . noteapp --asar --icon=appIcon.ico --overwrite",
+    "build-small": "npm prune --production && electron-packager . noteapp --platform=win32 --arch=x64  --overwrite --asar --icon=appIcon.ico --ignore='^/src' --ignore='^/test'"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "electron": "^30.0.6"
+    "electron": "^30.0.6",
+    "electron-reload": "^2.0.0-alpha.1"
   },
   "dependencies": {
     "electron-packager": "^17.1.2",

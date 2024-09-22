@@ -34,21 +34,15 @@ saveBtn.addEventListener("click", async (e) => {
   if (!isUpdate) {
     const result = await api.saveNote(note);
     const notes = await api.getNotes();
-    clearInput(formInputs);
     displayNotes(notes);
-    saveBtn.textContent = "Save";
-    // api.showNotification({ title: "Info", body: "Data Saved in Database" });
+    resetForm();
   } else {
     if (updateId) {
       note.id = updateId;
       const result = await api.updateNote(note);
       const notes = await api.getNotes();
       displayNotes(notes);
-      clearInput(formInputs);
-      updateId = null;
-      isUpdate = false;
-      saveBtn.textContent = "Save";
-      // api.showNotification({ title: "Info", body: "Data updated in Database" });
+      resetForm();
     }
   }
 });
@@ -80,8 +74,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   noteListContainer.innerHTML = "";
   const notes = await api.getNotes();
   displayNotes(notes);
-  const systemInfo = await api.getSysteminfo("username");
-  footerStatus.innerHTML = `Username: ${systemInfo}`;
 });
 
 noteListContainer.addEventListener("click", async (e) => {
@@ -111,8 +103,8 @@ noteListContainer.addEventListener("contextmenu", async (e) => {
   await api.showPopMenu(id);
 });
 
-deleteBtn.addEventListener("click", async (e) => {
-  if (!deleteId)
+const deleteNote = async (id) => {
+  if (!id)
     return await api.showMessage({
       message: "Select Note to be deleted!",
       type: "error",
@@ -127,18 +119,30 @@ deleteBtn.addEventListener("click", async (e) => {
   });
 
   if (!result) return;
-  await api.deleteNote(deleteId);
+  await api.deleteNote(id);
   const notes = await api.getNotes();
   displayNotes(notes);
+  resetForm();
+};
+
+deleteBtn.addEventListener("click", async (e) => {
+  await deleteNote(deleteId);
   deleteId = null;
-  clearInput(formInputs);
 });
 
 addBtn.addEventListener("click", (e) => {
+  resetForm();
+});
+
+const resetForm = () => {
   clearInput(formInputs);
   titleInput.focus();
   saveBtn.textContent = "Save";
   updateId = null;
   isUpdate = false;
   deleteId = null;
+};
+
+window.api.onNoteDelete(async (event, id) => {
+  await deleteNote(id);
 });

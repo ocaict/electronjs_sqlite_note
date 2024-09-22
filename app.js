@@ -6,8 +6,8 @@ const {
   Notification,
   dialog,
 } = require("electron/main");
-const os = require("os");
 const path = require("path");
+
 const {
   insertNote,
   getAllNotes,
@@ -15,12 +15,13 @@ const {
   updateNote,
   deleteNote,
 } = require("./db_config");
+const { shell } = require("electron");
 
 let mainWindow;
+let aboutWindow;
 const preloadJS = "preload.js";
-
 const appIcon = "appIcon.png";
-function createWindow() {
+function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 1024,
     minWidth: 1024,
@@ -41,10 +42,30 @@ function createWindow() {
 
   if (!app.isPackaged) return mainWindow.webContents.openDevTools();
 }
+function createAboutWindow() {
+  aboutWindow = new BrowserWindow({
+    width: 300,
+    height: 250,
+    show: false,
+    parent: mainWindow,
+    modal: true,
+    resizable: false,
+    frame: false,
+    transparent: true,
+    icon: path.join(__dirname, appIcon),
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, preloadJS),
+    },
+  });
+  aboutWindow.loadFile("ui/about.html");
+  aboutWindow.on("ready-to-show", () => aboutWindow.show());
+  if (!app.isPackaged) return aboutWindow.webContents.openDevTools();
+}
 
 app.whenReady().then(() => {
-  createWindow();
-
+  createMainWindow();
   Menu.setApplicationMenu(
     Menu.buildFromTemplate([
       {
@@ -56,25 +77,15 @@ app.whenReady().then(() => {
           { role: app.isPackaged ? "quit" : "toggleDevTools" },
         ],
       },
+      {
+        label: "About",
+        click: () => {
+          createAboutWindow();
+        },
+      },
     ])
   );
-  const info = {
-    arch: os.arch(),
-    cpus: os.cpus(),
-    freemem: os.freemem(),
-    platform: os.platform(),
-    release: os.release(),
-    totalmem: os.totalmem(),
-    type: os.type(),
-    username: os.userInfo().username,
-    uptime: os.uptime(),
-    version: os.version(),
-    machine: os.machine(),
-  };
-  ipcMain.handle("os", (e, key) => {
-    if (key) return info[key];
-    return info;
-  });
+
   ipcMain.handle("show-notification", (e, { title, body, subtitle }) => {
     const notification = new Notification({
       icon: appIcon,
@@ -85,12 +96,6 @@ app.whenReady().then(() => {
   });
 });
 
-/* // Context menu for main window
-mainWindow.webContents.on("context-menu", (e, params) => {
-  e.preventDefault();
-  // menu.popup(mainWindow, params.x, params.y);
-});
- */
 // Save
 ipcMain.handle("save-note", async (e, note) => {
   if (!note.title.trim() || !note.body.trim())
@@ -145,8 +150,7 @@ ipcMain.handle("show-popup-menu", async (e, id) => {
     {
       label: "Delete",
       click: async (e) => {
-        await deleteNote(id);
-        mainWindow.reload();
+        mainWindow.webContents.send("note-delete", id);
       },
     },
 
@@ -161,6 +165,14 @@ ipcMain.handle("show-popup-menu", async (e, id) => {
   menu.popup(mainWindow);
 });
 
+ipcMain.handle("open-url", async () => {
+  shell.openExternal("https://oluegwuc.netlify.app/");
+});
+
+ipcMain.handle("app-version", async () => {
+  return app.getVersion();
+});
+
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
@@ -169,6 +181,12 @@ app.on("window-all-closed", () => {
 
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+    createMainWindow();
   }
 });
+
+if (!app.isPackaged) {
+  require("electron-reload")(__dirname, {
+    electron: require(`${__dirname}/node_modules/electron`),
+  });
+}
