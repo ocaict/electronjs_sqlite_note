@@ -1,13 +1,14 @@
 {
   "name": "note_app",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "main": "app.js",
   "scripts": {
     "dev": "electron .",
     "rebuild": "electron-rebuild -f -w sqlite3",
     "build": "electron-packager . noteapp --asar --icon=appIcon.ico --overwrite",
     "build-small": "npm prune --production && electron-packager . noteapp --platform=win32 --arch=x64  --overwrite --asar --icon=appIcon.ico --ignore='^/src' --ignore='^/test'",
-    "package": "electron-builder",
+    "dist": "electron-builder",
+    "release": "electron-builder --publish always",
     "postinstall": "electron-builder install-app-deps"
   },
   "build": {
@@ -22,7 +23,8 @@
       }
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "appIcon.png"
     },
     "nsis": {
       "oneClick": false,
@@ -37,13 +39,12 @@
   "devDependencies": {
     "electron": "^30.0.6",
     "electron-builder": "^25.0.5",
-    "electron-packager": "^17.1.2",
     "electron-rebuild": "^3.2.9",
-    "electron-reload": "^2.0.0-alpha.1",
-    "electron-updater": "^6.3.4"
+    "electron-reload": "^2.0.0-alpha.1"
   },
   "dependencies": {
     "electron-log": "^5.2.0",
+    "electron-updater": "^6.3.4",
     "sqlite3": "^5.1.7"
   }
 }

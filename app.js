@@ -18,12 +18,11 @@ const {
 const { shell } = require("electron");
 
 const { autoUpdater } = require("electron-updater");
-const logPath = app.isPackaged ? "resources" : "logs";
 const log = require("electron-log");
-log.transports.file.resolvePathFn = () =>
-  path.join(__dirname, logPath, "logs.log");
-log.log(`AppVersion: ${app.getVersion()}`);
+const logPath = app.isPackaged ? "resources" : "logs";
+log.transports.file.resolvePathFn = () => path.join(logPath, "logs.log");
 
+console.log(path.join(app.getPath("userData"), "resources"));
 let mainWindow;
 let aboutWindow;
 const preloadJS = "preload.js";
@@ -101,7 +100,9 @@ app.whenReady().then(() => {
     });
     notification.show();
   });
+  // Appversion
 
+  log.log(`AppVersion: ${app.getVersion()}`);
   // Autoupdate logics
   autoUpdater.checkForUpdatesAndNotify();
 
