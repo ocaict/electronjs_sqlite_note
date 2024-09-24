@@ -33,7 +33,7 @@ saveBtn.addEventListener("click", async (e) => {
 
   if (!isUpdate) {
     const result = await api.saveNote(note);
-    console.log(result);
+    if (!result.success) return;
     const notes = await api.getNotes();
     displayNotes(notes);
     resetForm();
@@ -41,7 +41,7 @@ saveBtn.addEventListener("click", async (e) => {
     if (updateId) {
       note.id = updateId;
       const result = await api.updateNote(note);
-      console.log(result);
+      if (!result.success) return;
       const notes = await api.getNotes();
       displayNotes(notes);
       resetForm();
@@ -52,7 +52,6 @@ saveBtn.addEventListener("click", async (e) => {
 const displayNotes = (notes) => {
   if (!notes.length) {
     noteListContainer.innerHTML = `<p class="empty-message">Your note will display here</p>`;
-
     return;
   }
   const html = notes
@@ -76,9 +75,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   noteListContainer.innerHTML = "";
   const notes = await api.getNotes();
   displayNotes(notes);
-
-  const path = await api.getPath();
-  console.log(path);
 });
 
 noteListContainer.addEventListener("click", async (e) => {
@@ -158,4 +154,8 @@ window.api.onNoteCopy(async (event, id) => {
   } = await api.getNote(id);
   const noteString = `${title} \n ${body}`;
   await navigator.clipboard.writeText(noteString);
+});
+
+window.api.onError(async (event, error) => {
+  console.log(error);
 });

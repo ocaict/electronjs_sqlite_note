@@ -14,12 +14,11 @@ const {
   getNote,
   updateNote,
   deleteNote,
-  dbPath,
-} = require("./db_config");
+} = require("./config/db_config");
 const { shell } = require("electron");
 
 const { autoUpdater } = require("electron-updater");
-const log = require("./log_config");
+const log = require("./config/log_config");
 const fs = require("fs");
 
 let mainWindow;
@@ -102,7 +101,6 @@ app.whenReady().then(() => {
   });
   // Appversion
   log.log(`AppVersion: ${app.getVersion()}`);
-  log.info("Application started");
 
   // Autoupdate logics
   // autoUpdater.checkForUpdatesAndNotify();
@@ -138,6 +136,7 @@ ipcMain.handle("save-note", async (e, note) => {
     const result = await insertNote(note);
     return result;
   } catch (error) {
+    mainWindow.webContents.send("error", error);
     return { success: false, error };
   }
 });
@@ -208,20 +207,6 @@ ipcMain.handle("open-url", async () => {
 
 ipcMain.handle("app-version", async () => {
   return app.getVersion();
-});
-
-ipcMain.handle("get-path", async () => {
-  try {
-    log.log(`AppVersion: ${app.getVersion()}`);
-    log.info("Application started");
-
-    return {};
-  } catch (error) {
-    return {
-      success: false,
-      error,
-    };
-  }
 });
 
 app.on("window-all-closed", () => {

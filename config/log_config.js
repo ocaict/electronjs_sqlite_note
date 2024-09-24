@@ -6,7 +6,6 @@ const logPath = app.isPackaged
   ? path.join(process.resourcesPath, "logs", "main.log")
   : path.join(__dirname, "logs", "logs.log");
 log.transports.file.resolvePathFn = () => logPath;
-log.info("Log from the main process");
 
 // Log uncaught exceptions
 process.on("uncaughtException", (error) => {

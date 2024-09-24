@@ -12,5 +12,5 @@ contextBridge.exposeInMainWorld("api", {
   onNoteCopy: (callback) => ipcRenderer.on("copy-note", callback),
   getAppVersion: () => ipcRenderer.invoke("app-version"),
   openUrl: () => ipcRenderer.invoke("open-url"),
-  getPath: () => ipcRenderer.invoke("get-path"),
+  onError: (cb) => ipcRenderer.on("error", cb),
 });

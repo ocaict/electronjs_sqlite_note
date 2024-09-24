@@ -144,5 +144,4 @@ module.exports = {
   getNote,
   updateNote,
   deleteNote,
-  dbPath,
 };
