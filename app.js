@@ -14,15 +14,14 @@ const {
   getNote,
   updateNote,
   deleteNote,
+  dbPath,
 } = require("./db_config");
 const { shell } = require("electron");
 
 const { autoUpdater } = require("electron-updater");
-const log = require("electron-log");
-const logPath = app.isPackaged ? "resources" : "logs";
-log.transports.file.resolvePathFn = () => path.join(logPath, "logs.log");
+const { log, logPath } = require("./log_config");
+const fs = require("fs");
 
-console.log(path.join(app.getPath("userData"), "resources"));
 let mainWindow;
 let aboutWindow;
 const preloadJS = "preload.js";
@@ -81,6 +80,7 @@ app.whenReady().then(() => {
             role: "reload",
           },
           { role: app.isPackaged ? "quit" : "toggleDevTools" },
+          { role: "toggleDevTools" },
         ],
       },
       {
@@ -101,10 +101,11 @@ app.whenReady().then(() => {
     notification.show();
   });
   // Appversion
-
   log.log(`AppVersion: ${app.getVersion()}`);
+  log.info("Application started");
+
   // Autoupdate logics
-  autoUpdater.checkForUpdatesAndNotify();
+  // autoUpdater.checkForUpdatesAndNotify();
 });
 
 autoUpdater.on("update-available", () => {
@@ -133,9 +134,12 @@ autoUpdater.on("error", (error) => {
 ipcMain.handle("save-note", async (e, note) => {
   if (!note.title.trim() || !note.body.trim())
     return dialog.showErrorBox("Error", "Note Title or body cannot be blank!");
-
-  const result = await insertNote(note);
-  return result;
+  try {
+    const result = await insertNote(note);
+    return result;
+  } catch (error) {
+    return { success: false, error };
+  }
 });
 
 ipcMain.handle("update-note", async (e, note) => {
@@ -204,6 +208,28 @@ ipcMain.handle("open-url", async () => {
 
 ipcMain.handle("app-version", async () => {
   return app.getVersion();
+});
+
+ipcMain.handle("get-path", async () => {
+  try {
+    log.log(`AppVersion: ${app.getVersion()}`);
+    log.info("Application started");
+    fs.writeFileSync(
+      path.join(app.getPath("userData"), "logs", "logs.log"),
+      "Custom Log File Working Now"
+    );
+    return {
+      logPath,
+      dbPath,
+      success: true,
+      myPath2: path.join(app.getPath("userData"), "logs", "logs.log"),
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error,
+    };
+  }
 });
 
 app.on("window-all-closed", () => {

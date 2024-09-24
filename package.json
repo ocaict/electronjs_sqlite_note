@@ -7,7 +7,7 @@
     "rebuild": "electron-rebuild -f -w sqlite3",
     "build": "electron-packager . noteapp --asar --icon=appIcon.ico --overwrite",
     "build-small": "npm prune --production && electron-packager . noteapp --platform=win32 --arch=x64  --overwrite --asar --icon=appIcon.ico --ignore='^/src' --ignore='^/test'",
-    "dist": "electron-builder",
+    "dist": "rm -rf dist && electron-builder",
     "release": "electron-builder --publish always",
     "postinstall": "electron-builder install-app-deps"
   },
@@ -31,7 +31,17 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "deleteAppDataOnUninstall": true
-    }
+    },
+    "extraResources": [
+      {
+        "from": "./databases",
+        "to": "./databases"
+      },
+      {
+        "from": "./logs",
+        "to": "./logs"
+      }
+    ]
   },
   "author": "Oluegwu Chigozie",
   "license": "ISC",

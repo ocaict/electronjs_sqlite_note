@@ -1,8 +1,53 @@
 const { app } = require("electron/main");
-const sqlite3 = require("sqlite3");
+const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
+const fs = require("fs");
 
-const dbPath = app.isPackaged ? "resources" : "databases";
-const db = new sqlite3.Database(dbPath + "/mydatabase.db");
+let dbPath;
+let userDataPath = app.getPath("userData");
+
+if (app.isPackaged) {
+  // In production - use resources/databases/mydatabase.db
+  dbPath = path.join(process.resourcesPath, "databases", "mydatabase.db");
+} else {
+  // In development - use databases/mydatabase.db in the project directory
+  dbPath = path.join(__dirname, "databases", "mydatabase.db");
+}
+
+// Ensure the database file exists and is writable
+if (app.isPackaged) {
+  // In production, we need to copy the database to a writable location
+  const writableDbPath = path.join(userDataPath, "databases", "mydatabase.db");
+  const dbDir = path.dirname(writableDbPath);
+
+  // Create the databases directory if it doesn't exist
+  if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+  }
+
+  if (!fs.existsSync(writableDbPath)) {
+    // If the database doesn't exist in the user data folder, copy it from resources
+    fs.copyFileSync(dbPath, writableDbPath);
+  }
+
+  // Use the writable path for database operations
+  dbPath = writableDbPath;
+} else {
+  // In development, ensure the database directory exists
+  const dbDir = path.dirname(dbPath);
+  if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+  }
+}
+
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error("Database opening error: ", err);
+  } else {
+    console.log("Connected to the database");
+    console.log("Database path:", dbPath);
+  }
+});
 
 db.run(`
 CREATE TABLE IF NOT EXISTS notes (
@@ -99,4 +144,5 @@ module.exports = {
   getNote,
   updateNote,
   deleteNote,
+  dbPath,
 };

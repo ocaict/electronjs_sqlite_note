@@ -33,6 +33,7 @@ saveBtn.addEventListener("click", async (e) => {
 
   if (!isUpdate) {
     const result = await api.saveNote(note);
+    console.log(result);
     const notes = await api.getNotes();
     displayNotes(notes);
     resetForm();
@@ -40,6 +41,7 @@ saveBtn.addEventListener("click", async (e) => {
     if (updateId) {
       note.id = updateId;
       const result = await api.updateNote(note);
+      console.log(result);
       const notes = await api.getNotes();
       displayNotes(notes);
       resetForm();
@@ -74,6 +76,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   noteListContainer.innerHTML = "";
   const notes = await api.getNotes();
   displayNotes(notes);
+
+  const path = await api.getPath();
+  console.log(path);
 });
 
 noteListContainer.addEventListener("click", async (e) => {
