@@ -19,7 +19,7 @@ const {
 const { shell } = require("electron");
 
 const { autoUpdater } = require("electron-updater");
-const { log, logPath } = require("./log_config");
+const log = require("./log_config");
 const fs = require("fs");
 
 let mainWindow;
@@ -214,16 +214,8 @@ ipcMain.handle("get-path", async () => {
   try {
     log.log(`AppVersion: ${app.getVersion()}`);
     log.info("Application started");
-    fs.writeFileSync(
-      path.join(app.getPath("userData"), "logs", "logs.log"),
-      "Custom Log File Working Now"
-    );
-    return {
-      logPath,
-      dbPath,
-      success: true,
-      myPath2: path.join(app.getPath("userData"), "logs", "logs.log"),
-    };
+
+    return {};
   } catch (error) {
     return {
       success: false,
