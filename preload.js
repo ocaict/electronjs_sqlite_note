@@ -13,4 +13,5 @@ contextBridge.exposeInMainWorld("api", {
   getAppVersion: () => ipcRenderer.invoke("app-version"),
   openUrl: () => ipcRenderer.invoke("open-url"),
   onError: (cb) => ipcRenderer.on("error", cb),
+  deleteAllNotes: () => ipcRenderer.invoke("delete-all-notes"),
 });

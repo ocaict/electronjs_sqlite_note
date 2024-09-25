@@ -11,7 +11,7 @@ if (app.isPackaged) {
   dbPath = path.join(process.resourcesPath, "databases", "mydatabase.db");
 } else {
   // In development - use databases/mydatabase.db in the project directory
-  dbPath = path.join(__dirname, "databases", "mydatabase.db");
+  dbPath = path.join(__dirname, "../databases", "mydatabase.db");
 }
 
 // Ensure the database file exists and is writable
@@ -116,7 +116,7 @@ function updateNote({ id, title, body }) {
       if (err)
         return reject({
           success: false,
-          message: "Error updating contact: " + err.message,
+          message: "Error updating note: " + err.message,
         });
 
       return resolve({ success: true, message: `Note with ID ${id} updated` });
@@ -130,10 +130,23 @@ function deleteNote(id) {
       if (err)
         return reject({
           success: false,
-          message: "Error deleting contact: " + err.message,
+          message: "Error deleting note: " + err.message,
         });
 
       return resolve({ success: true, message: `Note with ID ${id} deleted` });
+    });
+  });
+}
+function deleteAllNotes() {
+  return new Promise((resolve, reject) => {
+    db.run("DELETE FROM notes", function (err) {
+      if (err)
+        return reject({
+          success: false,
+          message: "Unable to delete all notes: " + err.message,
+        });
+
+      return resolve({ success: true, message: `All notes deleted` });
     });
   });
 }
@@ -144,4 +157,5 @@ module.exports = {
   getNote,
   updateNote,
   deleteNote,
+  deleteAllNotes,
 };

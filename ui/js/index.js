@@ -3,6 +3,7 @@ const titleInput = document.querySelector("#title");
 const bodyInput = document.querySelector("#body");
 const noteListContainer = document.querySelector(".note-list");
 const deleteBtn = document.querySelector(".delete-btn");
+const deleteAllBtn = document.querySelector(".delete-all-btn");
 const addBtn = document.querySelector(".add-btn");
 const footerStatus = document.querySelector(".footer-status");
 
@@ -146,6 +147,21 @@ const resetForm = () => {
 
 window.api.onNoteDelete(async (event, id) => {
   await deleteNote(id);
+});
+
+deleteAllBtn.addEventListener("click", async () => {
+  const result = await api.showMessage({
+    title: "Confirm",
+    type: "info",
+    message: "Are you sure you want to delete all notes?",
+    buttons: ["Yes", "Cancel"],
+  });
+
+  if (!result) return;
+  const deleteResult = await api.deleteAllNotes();
+  if (!deleteResult.success) return;
+  resetForm();
+  displayNotes([]);
 });
 
 window.api.onNoteCopy(async (event, id) => {

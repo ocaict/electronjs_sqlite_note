@@ -4,9 +4,10 @@ const { app } = require("electron");
 
 const logPath = app.isPackaged
   ? path.join(process.resourcesPath, "logs", "main.log")
-  : path.join(__dirname, "logs", "logs.log");
+  : path.join(__dirname, "../logs", "logs.log");
 log.transports.file.resolvePathFn = () => logPath;
 
+console.log(path.join(__dirname, "logs", "logs.log"));
 // Log uncaught exceptions
 process.on("uncaughtException", (error) => {
   log.error("Uncaught exception:", error);

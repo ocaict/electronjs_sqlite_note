@@ -24,7 +24,12 @@ button {
   background-color: #3f3f3fe3;
   color: #fff;
 }
-
+.delete-all-btn {
+  background-color: darkred;
+}
+.delete-all-btn:hover {
+  background-color: red;
+}
 body {
   height: 100vh;
   background-color: #333;

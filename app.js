@@ -14,6 +14,7 @@ const {
   getNote,
   updateNote,
   deleteNote,
+  deleteAllNotes,
 } = require("./config/db_config");
 const { shell } = require("electron");
 
@@ -160,6 +161,10 @@ ipcMain.handle("onenote", async (e, id) => {
 
 ipcMain.handle("delete-note", async (e, id) => {
   const result = await deleteNote(id);
+  return result;
+});
+ipcMain.handle("delete-all-notes", async () => {
+  const result = await deleteAllNotes();
   return result;
 });
 
